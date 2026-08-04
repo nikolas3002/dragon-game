@@ -1102,3 +1102,411 @@ drawNPC();
 
 
 loop();
+
+// =====================================
+// DRAGON PIXEL RPG
+// TEIL 3/10
+// MONSTER SYSTEM
+// =====================================
+
+
+
+const monsterArten=[
+
+
+{
+name:"Grünschleim",
+hp:50,
+attack:8,
+color:"#35d04b"
+},
+
+
+{
+name:"Schattenwolf",
+hp:90,
+attack:15,
+color:"#555577"
+},
+
+
+{
+name:"Feuerkobold",
+hp:120,
+attack:20,
+color:"#ff5522"
+}
+
+
+];
+
+
+
+
+
+let monster=[];
+
+
+
+
+
+
+// ---------------------
+// MONSTER ERZEUGEN
+// ---------------------
+
+
+function spawnMonster(){
+
+
+if(monster.length>5)
+return;
+
+
+
+let art=
+monsterArten[
+Math.floor(
+Math.random()*monsterArten.length
+)
+];
+
+
+
+monster.push({
+
+
+x:
+Math.floor(
+Math.random()*map.width
+)*TILE,
+
+
+y:
+Math.floor(
+Math.random()*map.height
+)*TILE,
+
+
+width:28,
+
+height:28,
+
+
+speed:0.5,
+
+
+data:{
+name:art.name,
+hp:art.hp,
+attack:art.attack,
+color:art.color
+},
+
+
+moveTimer:0
+
+
+});
+
+
+
+}
+
+
+
+
+
+setInterval(()=>{
+
+
+spawnMonster();
+
+
+},5000);
+
+
+
+
+
+
+
+
+
+// ---------------------
+// MONSTER ZEICHNEN
+// ---------------------
+
+
+function drawMonster(){
+
+
+
+monster.forEach(m=>{
+
+
+
+let x=m.x-camera.x;
+
+let y=m.y-camera.y;
+
+
+
+// Schatten
+
+ctx.fillStyle="rgba(0,0,0,.3)";
+
+ctx.fillRect(
+x,
+y+25,
+28,
+5
+);
+
+
+
+// Körper
+
+ctx.fillStyle=m.data.color;
+
+
+ctx.fillRect(
+x,
+y,
+28,
+28
+);
+
+
+
+// Augen
+
+ctx.fillStyle="black";
+
+
+ctx.fillRect(
+x+5,
+y+8,
+5,
+5
+);
+
+
+ctx.fillRect(
+x+18,
+y+8,
+5,
+5
+);
+
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+// ---------------------
+// MONSTER BEWEGUNG
+// ---------------------
+
+
+function updateMonster(){
+
+
+
+monster.forEach(m=>{
+
+
+m.moveTimer++;
+
+
+
+if(m.moveTimer>80){
+
+
+
+let richtung=
+Math.floor(
+Math.random()*4
+);
+
+
+
+if(richtung==0)
+m.x+=16;
+
+
+if(richtung==1)
+m.x-=16;
+
+
+if(richtung==2)
+m.y+=16;
+
+
+if(richtung==3)
+m.y-=16;
+
+
+
+m.moveTimer=0;
+
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+// ---------------------
+// KOLLISION SPIELER
+// ---------------------
+
+
+function checkMonster(){
+
+
+
+monster.forEach((m,index)=>{
+
+
+
+let dist=Math.sqrt(
+
+
+(player.x-m.x)**2+
+(player.y-m.y)**2
+
+
+);
+
+
+
+if(dist<35){
+
+
+
+console.log(
+"Kampf gegen:",
+m.data.name
+);
+
+
+
+aktuellerKampfMonster=m.data;
+
+
+monster.splice(index,1);
+
+
+
+startBattle();
+
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+// ---------------------
+// KAMPF VARIABLE
+// ---------------------
+
+
+let aktuellerKampfMonster=null;
+
+let battleActive=false;
+
+
+
+
+
+
+
+
+// ---------------------
+// UPDATE ERWEITERN
+// ---------------------
+
+
+let oldUpdate3=update;
+
+
+update=function(){
+
+
+oldUpdate3();
+
+
+
+updateMonster();
+
+
+checkMonster();
+
+
+};
+
+
+
+
+
+
+
+
+
+// ---------------------
+// DRAW ERWEITERN
+// ---------------------
+
+
+let oldDraw3=draw;
+
+
+
+draw=function(){
+
+
+
+oldDraw3();
+
+
+
+drawMonster();
+
+
+
+};
