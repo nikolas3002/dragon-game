@@ -5184,3 +5184,38 @@ drawPause();
 // ENDE DES SPIELSYSTEMS
 // Dragon Pixel RPG v1.0
 // =====================================
+
+function touchMove(key){
+
+keys[key]=true;
+
+
+setTimeout(()=>{
+
+keys[key]=false;
+
+},100);
+
+}
+
+
+
+document.getElementById("up")
+.ontouchstart=()=>touchMove("w");
+
+
+document.getElementById("down")
+.ontouchstart=()=>touchMove("s");
+
+
+document.getElementById("left")
+.ontouchstart=()=>touchMove("a");
+
+
+document.getElementById("right")
+.ontouchstart=()=>touchMove("d");
+
+
+
+document.getElementById("attack")
+.ontouchstart=()=>playerAttack();
