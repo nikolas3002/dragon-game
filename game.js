@@ -649,6 +649,454 @@ requestAnimationFrame(loop);
 
 
 
+ // =====================================
+// DRAGON PIXEL RPG
+// TEIL 2/10
+// WELT + NPC SYSTEM
+// =====================================
+
+
+
+// ---------------------
+// WELT OBJEKTE
+// ---------------------
+
+
+const objects=[
+
+
+{
+type:"house",
+x:8*TILE,
+y:8*TILE,
+width:96,
+height:96
+},
+
+
+{
+type:"house",
+x:35*TILE,
+y:15*TILE,
+width:96,
+height:96
+},
+
+
+{
+type:"chest",
+x:20*TILE,
+y:12*TILE,
+opened:false
+}
+
+
+];
+
+
+
+
+
+
+
+// ---------------------
+// NPC SYSTEM
+// ---------------------
+
+
+const npcs=[
+
+
+{
+
+name:"Dorfältester",
+
+x:11*TILE,
+
+y:11*TILE,
+
+
+text:
+"Willkommen Held! Der Drache erwacht bald..."
+
+
+},
+
+
+{
+
+name:"Händler",
+
+x:38*TILE,
+
+y:18*TILE,
+
+
+text:
+"Ich verkaufe später mächtige Items."
+
+
+}
+
+
+
+];
+
+
+
+
+
+let aktuellerNPC=null;
+
+
+
+
+
+
+
+
+// ---------------------
+// OBJEKTE ZEICHNEN
+// ---------------------
+
+
+
+function drawObjects(){
+
+
+
+objects.forEach(obj=>{
+
+
+let x=obj.x-camera.x;
+
+let y=obj.y-camera.y;
+
+
+
+if(obj.type=="house"){
+
+
+
+// Dach
+
+ctx.fillStyle="#9b2c2c";
+
+
+ctx.fillRect(
+x-10,
+y-20,
+116,
+40
+);
+
+
+
+// Haus
+
+ctx.fillStyle="#e5b36a";
+
+
+ctx.fillRect(
+x,
+y,
+96,
+80
+);
+
+
+
+// Tür
+
+ctx.fillStyle="#5b3000";
+
+
+ctx.fillRect(
+x+38,
+y+45,
+20,
+35
+);
+
+
+
+}
+
+
+
+if(obj.type=="chest"){
+
+
+
+ctx.fillStyle=
+obj.opened?
+"#555":
+"#8b4513";
+
+
+ctx.fillRect(
+x,
+y,
+25,
+20
+);
+
+
+}
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ---------------------
+// NPC ZEICHNEN
+// ---------------------
+
+
+function drawNPC(){
+
+
+
+npcs.forEach(npc=>{
+
+
+let x=npc.x-camera.x;
+
+let y=npc.y-camera.y;
+
+
+
+// Körper
+
+ctx.fillStyle="#ffcc00";
+
+
+ctx.fillRect(
+x,
+y,
+22,
+28
+);
+
+
+
+// Kopf
+
+ctx.fillStyle="#ffd0a0";
+
+
+ctx.fillRect(
+x+3,
+y-10,
+16,
+12
+);
+
+
+
+});
+
+
+
+}
+
+
+
+
+
+
+
+
+// ---------------------
+// NPC INTERAKTION
+// ---------------------
+
+
+function checkNPC(){
+
+
+aktuellerNPC=null;
+
+
+
+npcs.forEach(npc=>{
+
+
+let distance=Math.sqrt(
+
+(player.x-npc.x)**2+
+(player.y-npc.y)**2
+
+);
+
+
+
+if(distance<50){
+
+
+aktuellerNPC=npc;
+
+
+}
+
+
+});
+
+
+
+}
+
+
+
+
+
+document.addEventListener(
+"keydown",
+e=>{
+
+
+if(
+e.key.toLowerCase()=="e" &&
+aktuellerNPC
+){
+
+
+alert(
+aktuellerNPC.name+
+": "+
+aktuellerNPC.text
+);
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+
+
+// ---------------------
+// BESSERE GRAS-EFFEKTE
+// ---------------------
+
+
+function grassDetails(){
+
+
+
+for(let i=0;i<80;i++){
+
+
+
+let x=
+Math.random()*map.width*TILE-camera.x;
+
+
+let y=
+Math.random()*map.height*TILE-camera.y;
+
+
+
+ctx.fillStyle="#3c992e";
+
+
+ctx.fillRect(
+x,
+y,
+2,
+5
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+// ---------------------
+// UPDATE ERWEITERN
+// ---------------------
+
+
+let oldUpdate2=update;
+
+
+
+update=function(){
+
+
+
+oldUpdate2();
+
+
+checkNPC();
+
+
+
+};
+
+
+
+
+
+
+
+// ---------------------
+// DRAW ERWEITERN
+// ---------------------
+
+
+let oldDraw2=draw;
+
+
+
+draw=function(){
+
+
+
+oldDraw2();
+
+
+
+grassDetails();
+
+
+drawObjects();
+
+
+drawNPC();
+
+
+
+}; 
 }
 
 
